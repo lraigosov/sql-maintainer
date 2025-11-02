@@ -267,13 +267,13 @@ Incluye:
 
 ```
 sql-maintainer/
-├── diario_automatico/          # Pipeline de mantenimiento diario
+├── daily-automation/           # Pipeline de mantenimiento diario
 │   ├── PM Daily - Task_M1_V2 - Initial Review.sql
 │   ├── PM Daily - Task_M2_V2 - Initial Rebuild.sql
 │   ├── ...
 │   ├── Setup-SQLAgentJobs.ps1  # Script de automatización
 │   └── README.md               # Documentación del pipeline
-├── DBA-Globales/               # Consultas globales de análisis
+├── dba-globals/                # Consultas globales de análisis
 │   ├── ...consultas varias.sql
 ├── .gitignore
 ├── CONTRIBUTING.md             # Este archivo
@@ -283,8 +283,8 @@ sql-maintainer/
 ### Agregar nuevos scripts
 
 **Para scripts SQL:**
-1. Coloca en la carpeta apropiada (diario_automatico/ o DBA-Globales/)
-2. Usa nombres descriptivos en inglés si es en diario_automatico/
+1. Coloca en la carpeta apropiada (daily-automation/ o dba-globals/)
+2. Usa nombres descriptivos en inglés si es en daily-automation/
 3. Incluye comentarios explicativos al inicio
 4. Documenta en el README de la carpeta correspondiente
 
