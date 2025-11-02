@@ -42,3 +42,6 @@ exports/
 # Archivos de Excel temporales
 ~$*.xlsx
 ~$*.xls
+
+# Artículos y borradores personales
+articles/
