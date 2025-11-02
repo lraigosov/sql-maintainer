@@ -7,6 +7,15 @@ DMVs: sys.dm_tran_locks, sys.dm_os_waiting_tasks, sys.dm_exec_requests, sys.dm_e
 Seguridad/Impacto: Solo lectura; sin cambios. Puede mostrar texto de consultas activas.
 Uso: Ejecutar cuando se sospechen bloqueos. Opcional: filtrar por base de datos o sesión.
 */
+/*
+Script: View Blocking Processes
+Propósito: Identificar sesiones bloqueadoras y bloqueadas con consultas y duración de bloqueo.
+Entradas: Permisos de lectura en DMVs.
+Salidas: Sesión bloqueadora, bloqueada, consulta y duración en ms.
+DMVs: sys.dm_tran_locks, sys.dm_os_waiting_tasks, sys.dm_exec_requests, sys.dm_exec_sql_text.
+Seguridad/Impacto: Solo lectura; puede mostrar texto de consultas.
+Uso: Ejecutar en la instancia para diagnosticar bloqueos activos.
+*/
 -- Procesos de bloqueo
 WITH LockingRequests AS (
     SELECT
