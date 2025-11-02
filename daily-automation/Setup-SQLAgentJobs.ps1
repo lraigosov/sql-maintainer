@@ -1,45 +1,53 @@
 <#
 .SYNOPSIS
-    Crea y programa jobs de SQL Server Agent para el pipeline diario de mantenimiento de índices (M1-M7).
+    Crea y programa jobs de SQL Server Agent para el pipeline diario de mantenimiento de índices (M1–M7).
 
 .DESCRIPTION
-    Este script PowerShell genera automáticamente 7 jobs en SQL Server Agent, uno para cada tarea del pipeline:
-    - M1: Revisión Inicial
-    - M2: Reconstrucción Inicial (>30%)
-    - M3: Reorganización Inicial (10-30%)
-    - M4: Reconstrucción Residual (≥10%)
-    - M5: Revisión Final
-    - M6: Tiempos por Consulta Diarios
-    - M7: Recomendaciones de Índices
+    Genera automáticamente 7 jobs (uno por tarea M1–M7) en SQL Server Agent con un schedule diario y horarios
+    escalonados. Si un job ya existe con el mismo nombre, se elimina y vuelve a crear (idempotente por nombre).
 
-    Todos los jobs se programan en un schedule diario con horarios escalonados durante la ventana de mantenimiento.
+    Tareas:
+      - M1: Revisión Inicial
+      - M2: Reconstrucción Inicial (>30%)
+      - M3: Reorganización Inicial (10–30%)
+      - M4: Reconstrucción Residual (≥10%)
+      - M5: Revisión Final
+      - M6: Tiempos por Consulta Diarios
+      - M7: Recomendaciones de Índices
+
+    Los pasos ejecutan: EXEC dbo.Tarea_Mx_Vy en la base indicada. El owner por defecto del job es 'sa'.
 
 .PARAMETER ServerInstance
-    Instancia de SQL Server donde se crearán los jobs (por defecto: localhost).
+    Instancia de SQL Server donde se crearán los jobs. Por defecto: localhost.
 
 .PARAMETER Database
     Base de datos donde residen los procedimientos (por defecto: BDPRINCIPAL).
 
 .PARAMETER StartTime
-    Hora de inicio del primer job M1 en formato HH:mm (por defecto: 02:00 para las 2:00 AM).
+    Hora de inicio del primer job (M1) en formato HH:mm (por defecto: 02:00 → 2:00 AM).
 
 .PARAMETER IntervalMinutes
-    Minutos de separación entre cada tarea M1-M5 (por defecto: 15 minutos).
+    Minutos de separación entre tareas consecutivas (aplica M1→M2→…→M7). Por defecto: 15.
 
 .EXAMPLE
     .\Setup-SQLAgentJobs.ps1
-    Crea los jobs con configuración por defecto en localhost.
+    Crea los jobs con configuración por defecto en localhost, iniciando 02:00 con intervalos de 15 minutos.
 
 .EXAMPLE
-    .\Setup-SQLAgentJobs.ps1 -ServerInstance "PROD-SQL01" -Database "MiBaseDatos" -StartTime "01:00"
-    Crea los jobs en un servidor específico iniciando a la 1:00 AM.
+    .\Setup-SQLAgentJobs.ps1 -ServerInstance "PROD-SQL01" -Database "BDPRINCIPAL" -StartTime "01:00" -IntervalMinutes 10
+    Crea los jobs en el servidor indicado, iniciando a la 1:00 AM con intervalos de 10 minutos.
 
 .NOTES
-    Requisitos:
-    - SQL Server Agent en ejecución
-    - Permisos para crear jobs (rol sysadmin o SQLAgentOperatorRole)
-    - Módulo SqlServer de PowerShell instalado (Install-Module -Name SqlServer)
-    - Los procedimientos almacenados Tarea_M1_V2 a Tarea_M7_V1 deben existir en la base de datos
+    Requisitos y seguridad:
+      - SQL Server Agent en ejecución.
+      - Permisos para crear jobs (sysadmin o SQLAgentOperatorRole adecuado).
+      - Módulo SqlServer instalado: Install-Module -Name SqlServer -Scope CurrentUser.
+      - Los procedimientos Tarea_M1_V2 … Tarea_M7_V1 deben existir en la base de datos.
+      - Este script elimina y recrea jobs homónimos (sp_delete_job) antes de crearlos.
+      - Revisa owner, categoría y horarios según políticas de tu organización.
+
+.LINK
+    daily-automation/README.md
 #>
 
 [CmdletBinding()]

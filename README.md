@@ -25,6 +25,9 @@ Conjunto de herramientas y consultas para mantenimiento y observabilidad de SQL 
 
 - Base de datos objetivo por defecto: `BDPRINCIPAL` (ajusta según tu entorno).
 - Los nombres de archivo están en inglés; el contenido y la documentación permanecen en español.
+- Cabeceras de scripts:
+	- SQL (*.sql): cada archivo inicia con un bloque que resume Propósito, Entradas, Salidas, DMVs/Catálogos usados, Seguridad/Impacto y Uso.
+	- PowerShell (*.ps1): se usa ayuda comentada (.SYNOPSIS, .DESCRIPTION, .PARAMETER, .EXAMPLE, .NOTES) con notas de seguridad y requisitos.
 
 ## Contribución
 
