@@ -78,6 +78,41 @@ Buenas prácticas de revisión:
 - Revisión mensual de índices sugeridos: validar con workload; evitar redundancias.
 - Documentar excepciones: tablas particionadas, índices filtrados, cargas batch.
 
+## Checklist operativa y KPIs por cadencia
+
+Diaria (5–10 min):
+- Jobs M1–M7 ejecutados sin fallas (objetivo: 100%). Revisar historial en SQL Agent.
+- M5: fragmentación residual en tablas críticas — objetivo: Alta = 0%, Media <= 5%.
+- M6: p95 de consultas clave no aumenta > 10% vs baseline semanal.
+- `dbo.MaintenanceAlerts`: sin alertas de nivel Alto. Si hay, abrir ticket y asignar.
+- Respaldo de la base objetivo en últimas 24h — objetivo: 100% éxito (RPO).
+
+Semanal (30–60 min):
+- Tendencia de fragmentación por tabla; proponer ajustes de fillfactor donde aplique.
+- Validar 3–5 índices sugeridos de mayor impacto; abrir PR/CR con scripts validados.
+- Esperas del servidor: ninguna espera individual > 50% del total; si ocurre, plan de acción.
+- Bloqueos recurrentes: identificar patrones (sesión/objeto) y mitigaciones.
+- Revisión de jobs: schedules coherentes, owner/categoría correctos y sin jobs huérfanos.
+
+Mensual (2–4 h):
+- KPIs globales:
+  - p95 de consultas clave — objetivo definido con producto (p. ej., <= 800 ms).
+  - Incidentes por bloqueo — objetivo: <= N por mes (según criticidad).
+  - Crecimiento de tamaño de índices — objetivo: <= X% mensual (control de costos).
+  - Applied vs. Suggested indexes — objetivo: validar/aplicar top X% con mayor ROI.
+- Auditoría de seguridad: cambios en permisos/roles; confirmación de mínimos privilegios.
+- Pruebas de restore: 1 restauración de validación (muestra) — objetivo: 100% éxito.
+- Ajuste de umbrales (10/30, fillfactor) y de ventanas según evidencia del mes.
+
+SLIs/SLOs sugeridos:
+- Disponibilidad de jobs de mantenimiento: SLO 99.9% mensual.
+- Éxito de backups: SLI 100% dentro de RPO acordado.
+- Fragmentación alta en tablas críticas: SLI 0% sostenido.
+
+Notas operativas:
+- Definir lista de tablas críticas con negocio y aplicar objetivos más estrictos.
+- Registrar evidencia: exportar resultados clave (M5/M6/esperas/bloqueos) a un repositorio de reportes o tabla de métricas.
+
 ## Operar de forma segura
 
 - Lecturas sucias: varios scripts usan READ UNCOMMITTED para evitar bloqueos; úselo conscientemente.
