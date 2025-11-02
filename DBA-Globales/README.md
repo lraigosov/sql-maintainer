@@ -91,7 +91,7 @@ Este directorio contiene un conjunto de consultas SQL listas para uso cotidiano 
 ### SP - Maintenance Alerts
 - Propósito: procedimiento almacenado que construye un resumen de salud (fragmentación, estadísticas, índices faltantes, uso del log) y envía correo vía Database Mail.
 - Advertencias:
-  - El script crea `[dbo].[BestDocAlertas]` y referencia `USE [BESTDOC_V2]`. Adáptalo a tu base (por ejemplo, `BDPRINCIPAL`) antes de compilar.
+  - El script crea `[dbo].[BestDocAlertas]` y ya apunta a `USE [BDPRINCIPAL]`. Ajusta `@profile_email` y `@email_to` según tu entorno antes de compilar.
   - Requiere perfil de correo (`@profile_email`) y destinatarios válidos.
 
 ## Buenas prácticas

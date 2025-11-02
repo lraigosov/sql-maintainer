@@ -17,5 +17,5 @@ WHERE t.text IS NOT NULL
     AND t.text NOT LIKE '%sys.dm%'
     AND t.text NOT LIKE '%dm_exec%'
     AND t.text NOT LIKE '%tempdb%'
-	AND  DB_NAME(r.database_id) = 'BESTDOC_V2'
+	AND  DB_NAME(r.database_id) = 'BDPRINCIPAL'
 ORDER BY r.total_elapsed_time DESC;

@@ -1,4 +1,4 @@
-USE [BESTDOC_V2]
+USE [BDPRINCIPAL]
 GO
 
 /****** Object:  StoredProcedure [dbo].[BestDocAlertas]    Script Date: 10/4/2023 9:50:08 PM ******/
