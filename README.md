@@ -9,6 +9,7 @@ Conjunto de herramientas y consultas para mantenimiento y observabilidad de SQL 
 
 - Documentación del pipeline diario: [daily-automation/README.md](./daily-automation/README.md)
 - Catálogo de consultas DBA: [dba-globals/README.md](./dba-globals/README.md)
+- Guía de aprovechamiento y mejores prácticas: [GUIDE-APROVECHAMIENTO.md](./GUIDE-APROVECHAMIENTO.md)
 
 ## Requisitos
 
