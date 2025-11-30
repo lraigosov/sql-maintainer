@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Print Count of Medium and High Fragmented Indexes
 Propósito: Calcular y mostrar con PRINT el número de índices con fragmentación media (10<%<=30) y alta (>30) en la base actual.

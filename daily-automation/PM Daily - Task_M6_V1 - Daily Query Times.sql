@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M6_V1 - Daily Query Times
 Propósito: Capturar métricas de consultas ejecutadas en el día y registrarlas en dbo.ManttoTiemposConsulta.

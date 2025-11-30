@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Identify Queries Impacting TEMPDB with HASH Operations
 Propósito: Detectar consultas activas con operaciones que impactan tempdb (p. ej., HASH) y métricas de IO/tiempo.

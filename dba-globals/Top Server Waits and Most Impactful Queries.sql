@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 -- Configuración para mostrar información detallada
 /*
 Script: Top Server Waits and Most Impactful Queries

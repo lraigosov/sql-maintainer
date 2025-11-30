@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M2_V2 - Initial Rebuild
 Propósito: REBUILD de índices con fragmentación >30% y registro en dbo.Mantto_Reconstruccion con TipoRevision='Inicial'.

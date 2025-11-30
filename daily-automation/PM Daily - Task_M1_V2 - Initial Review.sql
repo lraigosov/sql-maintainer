@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M1_V2 - Initial Review
 Propósito: Medir el estado de fragmentación (>=10%) por tabla y registrar un snapshot de conteos en dbo.Mantto_Revision con TipoRevision='Inicial'.

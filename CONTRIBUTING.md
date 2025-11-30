@@ -132,6 +132,20 @@ catch {
 ---
 
 ## Proceso de pull request
+---
+
+## Atribución de Asistencia
+
+Parte del material del repositorio (scripts SQL y notebooks) fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude). La generación no es automática: cada propuesta fue contrastada con el esquema y ajustada manualmente. Al añadir nuevo contenido apoyado por herramientas de IA:
+
+1. Valida semántica y resultados contra la base de datos real.
+2. Reescribe para garantizar claridad y evitar ambigüedad.
+3. Añade al final del archivo (o última celda markdown en notebooks) la línea:
+
+    `Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.`
+
+No incorpores créditos si el aporte de IA fue irrelevante o descartado.
+
 
 ### 1. Fork y clona el repositorio
 

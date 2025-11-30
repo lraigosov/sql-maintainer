@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Missing Indexes Impact Summary
 Propósito: Resumir impactos de índices faltantes y filtrar candidatos según filas estimadas y actualizaciones.

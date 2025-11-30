@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Suggested Indexes Without Duplicates
 Propósito: Proponer índices faltantes filtrando aquellos potencialmente duplicados respecto a índices existentes.

@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: SP - Maintenance Alerts (dbo.MaintenanceAlerts)
 Propósito: Procedimiento para evaluar señales de mantenimiento (fragmentación, estadísticas, índices faltantes, uso de log) y notificar por correo.

@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M5_V2 - Final Review
 Propósito: Medir nuevamente la fragmentación (>=10%) tras el mantenimiento y registrar snapshot 'Final' en dbo.Mantto_Revision.
