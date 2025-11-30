@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M7_V1 - Index Optimization Recommendations for User Tables
 Propósito: Registrar observaciones y recomendaciones sobre índices de tablas de usuario (uso, tamaño, fragmentación) en dbo.Mantto_OptimizacionIndices.

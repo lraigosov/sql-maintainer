@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Get Stored Procedures Info
 Propósito: Listar procedimientos almacenados con fechas de creación y última modificación.

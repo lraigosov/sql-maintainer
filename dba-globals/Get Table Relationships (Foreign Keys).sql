@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Get Table Relationships (Foreign Keys)
 Propósito: Listar llaves foráneas con tablas y columnas involucradas.

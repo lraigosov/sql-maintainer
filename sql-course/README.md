@@ -1,6 +1,6 @@
-# SQL Course: De Junior a Senior con IA Generativa y Enfoque de Negocio
+# SQL Course: De Junior a Senior con Enfoque de Negocio
 
-Este curso se basa 100% en el pensum `pensum_sql.md` del repositorio. No se añaden temas fuera del documento: sólo se estructuran y se vuelven ejecutables en notebooks.
+Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA).
 
 ## Estructura de Notebooks (por tema)
 
@@ -23,7 +23,7 @@ Este curso se basa 100% en el pensum `pensum_sql.md` del repositorio. No se aña
 	- `05_kpis_avanzados.ipynb`
 	- `06_segmentacion_basica.ipynb`
 	- `07_optimizar_consultas_basico.ipynb`
-	- `08_control_version_datos.ipynb` (pendiente)
+	- `08_control_version_datos.ipynb`
 	- `09_integracion_fuentes.ipynb`
 	- `10_proyecto_intermedio.ipynb`
 
@@ -39,10 +39,10 @@ Este curso se basa 100% en el pensum `pensum_sql.md` del repositorio. No se aña
 	- `09_observabilidad_monitoreo.ipynb`
 	- `10_proyecto_senior.ipynb`
 
-- `module-ia/` IA Generativa Aplicada (4.1–4.7): Pendiente de creación por-tema.
-- `labs/` Laboratorios (5.1–5.4): Pendiente de creación por-tema.
-- `evaluation/` Evaluación y Certificación (6.1–6.3): Pendiente por-tema.
-- `resources/` Glosario + Recetario + Prompts (8 + anexos): Pendiente por-tema.
+- `module-ia/` Módulo de IA aplicada a SQL (4.1–4.7)
+- `labs/` Laboratorios (5.1–5.4)
+- `evaluation/` Evaluación y Certificación (6.1–6.3)
+- `resources/` Glosario + Recetario + Prompts (4 notebooks)
 
 ## Dataset Base
 
@@ -61,7 +61,7 @@ Cada notebook ejecutable asume que las tablas existen. Ejecuta primero el script
 1. Fundamentos: Sintaxis, joins, agregaciones, calidad de datos básica.
 2. Analítica: CTEs, funciones de ventana, modelado estrella, segmentación marketing, finanzas y calendarios.
 3. Senior: Arquitectura, índices, planes de ejecución, particionado, transacciones, seguridad, data quality avanzada, documentación y lineage.
-4. IA Generativa: Prompts para generar, explicar, revisar y documentar SQL con criterio humano.
+4. Complementos avanzados: explicación, revisión y documentación de SQL con enfoque práctico.
 5. Laboratorios: Prácticas focalizadas por nivel.
 6. Evaluación: Rúbricas y entregables de proyectos.
 7. Glosario/Recetario: Referencia rápida y prompts reutilizables.
@@ -73,7 +73,7 @@ Cada notebook ejecutable asume que las tablas existen. Ejecuta primero el script
 - Nombres: snake_case para tablas y columnas, prefijos `dim_` y `fact_` en modelo analítico.
 - Índices: sugerencias indicadas pero no creadas automáticamente (validar en contexto real).
 - Comentarios: BLOQUES arriba de cada sección y línea para pasos clave.
-- Buenas prácticas anti-alucinación IA: validar siempre contra esquema real, explicar antes de aceptar.
+- Buenas prácticas: validar siempre contra esquema real y documentar decisiones.
 
 ## Ejercicios y Retos
 
@@ -88,11 +88,7 @@ Cada notebook incluye:
 
 Ver `evaluacion_certificacion.ipynb` para criterios por nivel y rubricas de proyectos.
 
-## IA Generativa Responsable
-
-- No se desplaza el criterio humano: la IA asiste, no decide.
-- Registro de prompts en proyecto IA para trazabilidad.
-- Validación manual de propuestas de optimización.
+ 
 
 ## Cómo Empezar
 
@@ -100,7 +96,3 @@ Ver `evaluacion_certificacion.ipynb` para criterios por nivel y rubricas de proy
 2. Abre `level01/01_introduccion_relacional.ipynb` y sigue el orden por archivos.
 3. Completa cada proyecto (`level01/09_proyecto_cierre_junior.ipynb`, `level02/10_proyecto_intermedio.ipynb`, `level03/10_proyecto_senior.ipynb`) antes de avanzar.
 4. Usa el glosario/recetario (cuando esté disponible) como apoyo.
-
----
-
-Curso generado directamente del contenido de `pensum_sql.md` sin agregar temas externos. Para ampliaciones, modifica primero el pensum y luego regenera.

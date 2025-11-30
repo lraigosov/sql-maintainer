@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: User Security Details
 Propósito: Enumerar usuarios, roles y permisos efectivos sobre tablas, procedimientos y vistas en la base actual.

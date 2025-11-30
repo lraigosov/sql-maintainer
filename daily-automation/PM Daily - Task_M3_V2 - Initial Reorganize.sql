@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M3_V2 - Initial Reorganize
 Propósito: REORGANIZE de índices con fragmentación entre 10% y <30% y registro en dbo.Mantto_Reorganizacion.

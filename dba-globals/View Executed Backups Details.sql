@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: View Executed Backups Details
 Propósito: Listar los respaldos ejecutados (msdb.backupset) para la base de datos actual, con tamaños y fechas.

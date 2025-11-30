@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Get Triggers Info
 Propósito: Enumerar triggers con esquema/tabla, fechas de creación y modificación.

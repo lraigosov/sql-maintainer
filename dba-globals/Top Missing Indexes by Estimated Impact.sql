@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Top Missing Indexes by Estimated Impact
 Propósito: Listar los índices faltantes con mayor impacto estimado y proponer scripts CREATE INDEX con FILLFACTOR=80.

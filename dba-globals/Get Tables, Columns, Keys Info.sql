@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: Get Tables, Columns, Keys Info
 Propósito: Resumir metadatos de tablas, columnas y claves (PK y FK) en la base actual.

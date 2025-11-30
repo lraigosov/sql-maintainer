@@ -1,14 +1,16 @@
 # SQL Maintainer
 
-Conjunto de herramientas y consultas para mantenimiento y observabilidad de SQL Server, organizado en dos módulos:
+Conjunto de herramientas, consultas y material educativo para mantenimiento, observabilidad y capacitación en SQL Server, organizado en tres módulos:
 
 - `daily-automation/`: pipeline diario de mantenimiento de índices (M1–M7), con documentación extensa y script de automatización para SQL Server Agent.
 - `dba-globals/`: consultas de administración y diagnóstico listas para usar (esperas, rendimiento, índices, metadatos, bloqueos, backups, etc.).
+- `sql-course/`: curso estructurado de SQL con 47 notebooks Jupyter organizados en niveles progresivos (Junior, Intermedio, Senior), módulo complementario de IA aplicada, laboratorios prácticos, evaluaciones y recursos.
 
 ## Enlaces rápidos
 
 - Documentación del pipeline diario: [daily-automation/README.md](./daily-automation/README.md)
 - Catálogo de consultas DBA: [dba-globals/README.md](./dba-globals/README.md)
+- Contenido del curso SQL: [sql-course/README.md](./sql-course/README.md)
 - Guía de aprovechamiento y mejores prácticas: [GUIDE-APROVECHAMIENTO.md](./GUIDE-APROVECHAMIENTO.md)
 
 ## Requisitos
@@ -34,6 +36,7 @@ Conjunto de herramientas y consultas para mantenimiento y observabilidad de SQL 
 
 - Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para conocer el flujo de trabajo y estándares.
 - Pull Requests y mejoras son bienvenidos.
+ - Política de asistencia parcial documentada en `CONTRIBUTING.md` (créditos al final de archivos).
 
 ## Créditos
 

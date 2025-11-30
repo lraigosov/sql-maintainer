@@ -1,3 +1,4 @@
+-- Este material fue revisado y enriquecido parcialmente mediante asistencia de IA (OpenAI y Claude); la validación y decisiones editoriales finales son humanas.
 /*
 Script: PM Daily - Task_M4_V2 - Residual Rebuild
 Propósito: REBUILD de aseguramiento para índices con fragmentación >=10% tras M2/M3; registra como 'Final' en dbo.Mantto_Reconstruccion.
