@@ -6,3 +6,7 @@ notebook>=6.4.0
 matplotlib>=3.4.0
 seaborn>=0.11.0
 Faker>=13.0.0
+black
+flake8
+python-dotenv
+nbconvert
