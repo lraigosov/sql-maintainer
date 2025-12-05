@@ -67,7 +67,7 @@ def process_level(level_dir):
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
-    levels = ['level01', 'level02', 'level03']
+    levels = ['level01', 'level02', 'level03', 'module-ia', 'evaluation']
     
     for level in levels:
         level_path = os.path.join(base_dir, level)
