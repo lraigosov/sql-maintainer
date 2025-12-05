@@ -42,9 +42,21 @@ Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente d
 - `module-ia/` Módulo de IA aplicada a SQL (4.1–4.7)
 - `labs/` Laboratorios (5.1–5.4)
 - `evaluation/` Evaluación y Certificación (6.1–6.3)
-- `resources/` Glosario + Recetario + Prompts (4 notebooks)
+- `resources/` Glosario + Recetario + Prompts (4 notebooks) + [Diagrama ER](./resources/er_diagram.md)
+
+## Configuración del Entorno
+
+Antes de comenzar, asegúrate de tener tu entorno Python configurado para conectar a SQL Server.
+Hemos preparado una guía paso a paso en:
+👉 **[00_setup_environment.ipynb](./00_setup_environment.ipynb)**
+
+Sigue ese notebook para instalar las librerías necesarias y probar tu conexión.
 
 ## Dataset Base
+
+### Modelo de Datos (ER Diagram)
+
+Puedes ver el diagrama detallado de relaciones aquí: [Ver Diagrama ER](./resources/er_diagram.md)
 
 Archivo: `dataset_setup.sql` crea tablas:
 - `dim_clientes` (clientes)
