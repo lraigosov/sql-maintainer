@@ -1,6 +1,8 @@
 # SQL Course: De Junior a Senior con Enfoque de Negocio
 
-Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA).
+Curso estructurado de SQL con 48 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA).
+
+Incluye `00_setup_environment.ipynb` para configuración inicial del entorno Python/SQL Server.
 
 ## Estructura de Notebooks (por tema)
 
@@ -42,9 +44,21 @@ Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente d
 - `module-ia/` Módulo de IA aplicada a SQL (4.1–4.7)
 - `labs/` Laboratorios (5.1–5.4)
 - `evaluation/` Evaluación y Certificación (6.1–6.3)
-- `resources/` Glosario + Recetario + Prompts (4 notebooks)
+- `resources/` Glosario + Recetario + Prompts (4 notebooks) + [Diagrama ER](./resources/er_diagram.md)
+
+## Configuración del Entorno
+
+Antes de comenzar, asegúrate de tener tu entorno Python configurado para conectar a SQL Server.
+Hemos preparado una guía paso a paso en:
+👉 **[00_setup_environment.ipynb](./00_setup_environment.ipynb)**
+
+Sigue ese notebook para instalar las librerías necesarias y probar tu conexión.
 
 ## Dataset Base
+
+### Modelo de Datos (ER Diagram)
+
+Puedes ver el diagrama detallado de relaciones aquí: [Ver Diagrama ER](./resources/er_diagram.md)
 
 Archivo: `dataset_setup.sql` crea tablas:
 - `dim_clientes` (clientes)
@@ -86,7 +100,10 @@ Cada notebook incluye:
 
 ## Evaluación
 
-Ver `evaluacion_certificacion.ipynb` para criterios por nivel y rubricas de proyectos.
+Cada nivel incluye rúbricas de evaluación detalladas en la carpeta `evaluation/`:
+- `01_rubrica_junior.ipynb`: Criterios para proyecto nivel Junior
+- `02_rubrica_intermedio.ipynb`: Criterios para proyecto nivel Intermedio  
+- `03_rubrica_senior.ipynb`: Criterios para proyecto nivel Senior
 
  
 

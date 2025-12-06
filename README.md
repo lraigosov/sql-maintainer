@@ -4,7 +4,7 @@ Conjunto de herramientas, consultas y material educativo para mantenimiento, obs
 
 - `daily-automation/`: pipeline diario de mantenimiento de índices (M1–M7), con documentación extensa y script de automatización para SQL Server Agent.
 - `dba-globals/`: consultas de administración y diagnóstico listas para usar (esperas, rendimiento, índices, metadatos, bloqueos, backups, etc.).
-- `sql-course/`: curso estructurado de SQL con 47 notebooks Jupyter organizados en niveles progresivos (Junior, Intermedio, Senior), módulo complementario de IA aplicada, laboratorios prácticos, evaluaciones y recursos.
+- `sql-course/`: curso estructurado de SQL con 48 notebooks Jupyter organizados en niveles progresivos (Junior, Intermedio, Senior), módulo complementario de IA aplicada, laboratorios prácticos, evaluaciones y recursos.
 
 ## Enlaces rápidos
 
