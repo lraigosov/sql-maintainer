@@ -16,34 +16,46 @@ def get_db_connection(server, database, trusted, username, password, driver):
         conn_str = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
     return create_engine(conn_str)
 
-def generate_clients(n):
-    print(f"Generando {n} clientes...")
-    clients = []
-    for _ in range(n):
-        clients.append({
-            'nombre': fake.name(),
-            'email': fake.unique.email(),
-            'fecha_alta': fake.date_between(start_date='-2y', end_date='today'),
-            'segmento': random.choice(['Retail', 'SMB', 'Enterprise', 'Startup']),
-            'region_id': random.randint(1, 3) # Asumiendo 3 regiones iniciales
-        })
-    return pd.DataFrame(clients)
-
-def generate_sales(n, client_ids, product_ids):
-    print(f"Generando {n} ventas...")
-    sales = []
-    start_date = datetime.now() - timedelta(days=730)
+def generate_subscriptions(n, client_ids):
+    print(f"Generando {n} suscripciones...")
+    subs = []
+    plans = {'Basic': 100, 'Standard': 250, 'Premium': 500, 'Enterprise': 1000}
     
     for _ in range(n):
-        sales.append({
-            'fecha': fake.date_between(start_date='-2y', end_date='today'),
+        plan = random.choice(list(plans.keys()))
+        start_date = fake.date_between(start_date='-2y', end_date='today')
+        is_active = random.choice([0, 1])
+        end_date = None
+        if not is_active:
+            end_date = fake.date_between(start_date=start_date, end_date='today')
+            
+        subs.append({
             'cliente_id': random.choice(client_ids),
-            'producto_id': random.choice(product_ids),
-            'cantidad': random.randint(1, 20),
-            'descuento_pct': random.choice([0, 0, 0, 5, 10, 15]),
-            'canal': random.choice(['Online', 'Directo', 'Distribuidor', 'Retail'])
+            'fecha_inicio': start_date,
+            'fecha_fin': end_date,
+            'plan': plan,
+            'mrr': plans[plan],
+            'activo': is_active
         })
-    return pd.DataFrame(sales)
+    return pd.DataFrame(subs)
+
+def generate_inventory(product_ids):
+    print(f"Generando inventario para {len(product_ids)} productos...")
+    inventory = []
+    # Snapshot actual
+    date = datetime.now().date()
+    
+    for pid in product_ids:
+        initial = random.randint(10, 500)
+        final = max(0, initial - random.randint(0, initial))
+        inventory.append({
+            'producto_id': pid,
+            'fecha': date,
+            'stock_inicial': initial,
+            'stock_final': final,
+            'reposiciones': random.choice([0, 0, 10, 50, 100])
+        })
+    return pd.DataFrame(inventory)
 
 def main():
     parser = argparse.ArgumentParser(description='Generador de Datos Masivos para SQL Course')
@@ -56,6 +68,7 @@ def main():
     
     parser.add_argument('--clients', type=int, default=1000, help='Cantidad de clientes a generar')
     parser.add_argument('--sales', type=int, default=10000, help='Cantidad de ventas a generar')
+    parser.add_argument('--subs', type=int, default=1000, help='Cantidad de suscripciones a generar')
     
     args = parser.parse_args()
 
@@ -68,7 +81,7 @@ def main():
         df_clients.to_sql('dim_clientes', engine, if_exists='append', index=False)
         print(f"✅ {args.clients} clientes insertados.")
         
-        # Obtener IDs reales para integridad referencial
+        # Obtener IDs
         client_ids = pd.read_sql("SELECT cliente_id FROM dim_clientes", engine)['cliente_id'].tolist()
         product_ids = pd.read_sql("SELECT producto_id FROM dim_productos", engine)['producto_id'].tolist()
         
@@ -86,6 +99,16 @@ def main():
             df_sales = generate_sales(current_chunk, client_ids, product_ids)
             df_sales.to_sql('fact_ventas', engine, if_exists='append', index=False)
             print(f"   Bloque {i//chunk_size + 1} insertado ({current_chunk} filas).")
+
+        # 3. Generar e insertar Suscripciones
+        df_subs = generate_subscriptions(args.subs, client_ids)
+        df_subs.to_sql('fact_suscripciones', engine, if_exists='append', index=False)
+        print(f"✅ {args.subs} suscripciones insertadas.")
+
+        # 4. Generar e insertar Inventario (Snapshot diario)
+        df_inv = generate_inventory(product_ids)
+        df_inv.to_sql('fact_inventario', engine, if_exists='append', index=False)
+        print(f"✅ Inventario generado para {len(product_ids)} productos.")
             
         print("🎉 Generación de datos completada exitosamente.")
         

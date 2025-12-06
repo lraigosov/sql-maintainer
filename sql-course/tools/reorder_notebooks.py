@@ -112,7 +112,7 @@ def reorder_notebook(file_path):
 
 def main():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    target_levels = ['level01', 'level03'] # Level 2 was deemed okay, but maybe run on it too? 
+    target_levels = ['level01', 'level03', 'module-ia', 'labs', 'evaluation'] 
     # Let's run on L1 and L3 first.
     
     for level in target_levels:
