@@ -1,6 +1,8 @@
 # SQL Course: De Junior a Senior con Enfoque de Negocio
 
-Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA).
+Curso estructurado de SQL con 48 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA).
+
+Incluye `00_setup_environment.ipynb` para configuración inicial del entorno Python/SQL Server.
 
 ## Estructura de Notebooks (por tema)
 
@@ -98,7 +100,10 @@ Cada notebook incluye:
 
 ## Evaluación
 
-Ver `evaluacion_certificacion.ipynb` para criterios por nivel y rubricas de proyectos.
+Cada nivel incluye rúbricas de evaluación detalladas en la carpeta `evaluation/`:
+- `01_rubrica_junior.ipynb`: Criterios para proyecto nivel Junior
+- `02_rubrica_intermedio.ipynb`: Criterios para proyecto nivel Intermedio  
+- `03_rubrica_senior.ipynb`: Criterios para proyecto nivel Senior
 
  
 
