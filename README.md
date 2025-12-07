@@ -1,10 +1,10 @@
 # SQL Maintainer
 
-Conjunto de herramientas, consultas y material educativo para mantenimiento, observabilidad y capacitación en SQL Server, organizado en tres módulos:
+Conjunto de herramientas, consultas y material educativo para mantenimiento, observabilidad y capacitación en SQL Server, organizado en tres módulos principales:
 
-- `daily-automation/`: pipeline diario de mantenimiento de índices (M1–M7), con documentación extensa y script de automatización para SQL Server Agent.
-- `dba-globals/`: consultas de administración y diagnóstico listas para usar (esperas, rendimiento, índices, metadatos, bloqueos, backups, etc.).
-- `sql-course/`: curso estructurado de SQL con 48 notebooks Jupyter organizados en niveles progresivos (Junior, Intermedio, Senior), módulo complementario de IA aplicada, laboratorios prácticos, evaluaciones y recursos.
+- **`daily-automation/`**: Pipeline diario automatizado de mantenimiento de índices (M1–M7) con documentación detallada y script PowerShell para configurar SQL Server Agent jobs.
+- **`dba-globals/`**: Catálogo de 35+ consultas SQL de administración y diagnóstico listas para usar (esperas, rendimiento, índices, metadatos, bloqueos, backups, seguridad).
+- **`sql-course/`**: Curso estructurado con 47 notebooks Jupyter organizados en niveles progresivos (Junior, Intermedio, Senior), módulo de IA aplicada (7 notebooks), laboratorios prácticos (4 notebooks), evaluaciones (3 rúbricas) y recursos de referencia (4 notebooks).
 
 ## Enlaces rápidos
 
@@ -21,8 +21,18 @@ Conjunto de herramientas, consultas y material educativo para mantenimiento, obs
 
 ## Uso rápido
 
-- Mantenimiento diario: revisa y ejecuta los scripts M1–M7 en `daily-automation/` o usa el script `Setup-SQLAgentJobs.ps1` para crear trabajos programados.
-- Consultas DBA: ejecuta las consultas individuales desde `dba-globals/` según la necesidad de diagnóstico.
+### Mantenimiento Diario
+- Revisa y ejecuta los scripts M1–M7 en `daily-automation/` manualmente, o
+- Usa el script PowerShell `Setup-SQLAgentJobs.ps1` para crear y programar jobs automáticos en SQL Server Agent
+
+### Consultas DBA
+- Ejecuta las consultas individuales desde `dba-globals/` según necesidad de diagnóstico
+- Scripts organizados por categoría: rendimiento, índices, metadatos, bloqueos, seguridad, backups
+
+### Curso SQL
+- Sigue la progresión: `level01/` → `level02/` → `level03/`
+- Complementa con `module-ia/` y `labs/` según interés
+- Usa `resources/` como referencia constante
 
 ## Convenciones
 
@@ -34,10 +44,12 @@ Conjunto de herramientas, consultas y material educativo para mantenimiento, obs
 
 ## Contribución
 
-- Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para conocer el flujo de trabajo y estándares.
-- Pull Requests y mejoras son bienvenidos.
- - Política de asistencia parcial documentada en `CONTRIBUTING.md` (créditos al final de archivos).
+- Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para conocer el flujo de trabajo, estándares de código y proceso de Pull Requests.
+- Todas las contribuciones son bienvenidas: corrección de errores, nuevas características, optimizaciones, documentación, pruebas.
+- Política de asistencia con IA documentada en `CONTRIBUTING.md` (créditos indicados en pie de archivos afectados).
 
 ## Créditos
 
-- Autor/Mantenedor: lraigosov (LuisRai)
+**Autor/Mantenedor**: lraigosov (LuisRai)
+
+**Nota sobre asistencia con IA**: Parte del contenido fue estructurado con asistencia de modelos de lenguaje (OpenAI GPT-4, Anthropic Claude). Todo el contenido fue validado, curado y probado por el autor para asegurar aplicabilidad práctica y exactitud técnica.
