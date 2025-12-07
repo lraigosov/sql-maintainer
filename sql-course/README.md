@@ -1,8 +1,6 @@
 # SQL Course: De Junior a Senior con Enfoque de Negocio
 
-Curso estructurado de SQL con 48 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA).
-
-Incluye `00_setup_environment.ipynb` para configuración inicial del entorno Python/SQL Server.
+Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA), más 1 notebook de configuración inicial (`00_setup_environment.ipynb`).
 
 ## Estructura de Notebooks (por tema)
 
@@ -41,10 +39,10 @@ Incluye `00_setup_environment.ipynb` para configuración inicial del entorno Pyt
 	- `09_observabilidad_monitoreo.ipynb`
 	- `10_proyecto_senior.ipynb`
 
-- `module-ia/` Módulo de IA aplicada a SQL (4.1–4.7)
-- `labs/` Laboratorios (5.1–5.4)
-- `evaluation/` Evaluación y Certificación (6.1–6.3)
-- `resources/` Glosario + Recetario + Prompts (4 notebooks) + [Diagrama ER](./resources/er_diagram.md)
+- `module-ia/` Módulo de IA aplicada a SQL (7 notebooks)
+- `labs/` Laboratorios prácticos (4 notebooks)
+- `evaluation/` Evaluación y Certificación (3 rúbricas)
+- `resources/` Recursos de referencia (4 notebooks + Diagrama ER)
 
 ## Configuración del Entorno
 
@@ -72,13 +70,13 @@ Cada notebook ejecutable asume que las tablas existen. Ejecuta primero el script
 
 ## Progresión y Objetivos
 
-1. Fundamentos: Sintaxis, joins, agregaciones, calidad de datos básica.
-2. Analítica: CTEs, funciones de ventana, modelado estrella, segmentación marketing, finanzas y calendarios.
-3. Senior: Arquitectura, índices, planes de ejecución, particionado, transacciones, seguridad, data quality avanzada, documentación y lineage.
-4. Complementos avanzados: explicación, revisión y documentación de SQL con enfoque práctico.
-5. Laboratorios: Prácticas focalizadas por nivel.
-6. Evaluación: Rúbricas y entregables de proyectos.
-7. Glosario/Recetario: Referencia rápida y prompts reutilizables.
+1. Fundamentos (Level 1): Sintaxis, joins, agregaciones, calidad de datos básica.
+2. Analítica Intermedia (Level 2): CTEs, funciones de ventana, modelado dimensional, segmentación, KPIs.
+3. Senior (Level 3): Performance, índices, planes de ejecución, particionamiento, transacciones, seguridad, observabilidad.
+4. Módulo de IA: Prompting, explicación SQL, refactoring asistido, validación con IA, generación de datos sintéticos, ética.
+5. Laboratorios: 4 prácticas integradores transversales.
+6. Evaluación: 3 rúbricas para proyectos finales por nivel.
+7. Recursos: 4 notebooks de referencia (glosario, recetario, prompts IA, checklist calidad) + Diagrama ER.
 
 ## Convenciones Técnicas
 
@@ -101,15 +99,14 @@ Cada notebook incluye:
 ## Evaluación
 
 Cada nivel incluye rúbricas de evaluación detalladas en la carpeta `evaluation/`:
-- `01_rubrica_junior.ipynb`: Criterios para proyecto nivel Junior
-- `02_rubrica_intermedio.ipynb`: Criterios para proyecto nivel Intermedio  
-- `03_rubrica_senior.ipynb`: Criterios para proyecto nivel Senior
-
- 
+- `01_rubrica_junior.ipynb`: Criterios para proyecto nivel Junior (Level 1)
+- `02_rubrica_intermedio.ipynb`: Criterios para proyecto nivel Intermedio (Level 2)
+- `03_rubrica_senior.ipynb`: Criterios para proyecto nivel Senior (Level 3)
 
 ## Cómo Empezar
 
-1. Ejecuta `dataset_setup.sql` en tu instancia.
-2. Abre `level01/01_introduccion_relacional.ipynb` y sigue el orden por archivos.
-3. Completa cada proyecto (`level01/09_proyecto_cierre_junior.ipynb`, `level02/10_proyecto_intermedio.ipynb`, `level03/10_proyecto_senior.ipynb`) antes de avanzar.
-4. Usa el glosario/recetario (cuando esté disponible) como apoyo.
+1. Abre y ejecuta `00_setup_environment.ipynb` para configurar tu entorno Python/SQL Server.
+2. Ejecuta `dataset_setup.sql` en tu instancia SQL Server para crear las tablas del curso.
+3. Abre `level01/01_introduccion_relacional.ipynb` y sigue el orden secuencial.
+4. Completa cada proyecto capstone (`09_proyecto_cierre_junior.ipynb`, `10_proyecto_intermedio.ipynb`, `10_proyecto_senior.ipynb`) antes de avanzar al siguiente nivel.
+5. Usa los recursos en `resources/` como apoyo constante durante el curso.
