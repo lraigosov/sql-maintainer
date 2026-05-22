@@ -62,6 +62,7 @@ param(
     [string]$StartTime = "02:00",
     
     [Parameter(Mandatory=$false)]
+    [ValidateRange(1, 1440)]
     [int]$IntervalMinutes = 15
 )
 
@@ -131,7 +132,12 @@ Write-Host "Intervalo entre M1-M5: $IntervalMinutes minutos" -ForegroundColor Ye
 Write-Host ""
 
 # Calcular hora base
-$baseTime = [DateTime]::ParseExact($StartTime, "HH:mm", $null)
+try {
+    $baseTime = [DateTime]::ParseExact($StartTime, "HH:mm", [System.Globalization.CultureInfo]::InvariantCulture)
+}
+catch {
+    throw "El parámetro StartTime debe usar formato HH:mm, por ejemplo 02:00 o 23:30. Valor recibido: $StartTime"
+}
 
 # Crear los jobs
 foreach ($task in $tasks) {
@@ -149,6 +155,13 @@ GO
 IF EXISTS (SELECT 1 FROM msdb.dbo.sysjobs WHERE name = N'$jobName')
 BEGIN
     EXEC msdb.dbo.sp_delete_job @job_name = N'$jobName';
+END
+GO
+
+-- Eliminar schedule homónimo si quedó huérfano de una ejecución anterior
+IF EXISTS (SELECT 1 FROM msdb.dbo.sysschedules WHERE name = N'Schedule_$jobName')
+BEGIN
+    EXEC msdb.dbo.sp_delete_schedule @schedule_name = N'Schedule_$jobName';
 END
 GO
 
@@ -187,8 +200,7 @@ EXEC msdb.dbo.sp_attach_schedule
 
 -- Agregar el job al servidor local
 EXEC msdb.dbo.sp_add_jobserver
-    @job_name = N'$jobName',
-    @server_name = N'(local)';
+    @job_name = N'$jobName';
 
 PRINT 'Job $jobName creado exitosamente - Ejecuta a las $($baseTime.AddMinutes($task.OffsetMinutes).ToString("HH:mm"))';
 GO
@@ -201,8 +213,6 @@ GO
     catch {
         Write-Error "Error creando job $jobName : $_"
     }
-    
-    Start-Sleep -Milliseconds 500
 }
 
 Write-Host ""

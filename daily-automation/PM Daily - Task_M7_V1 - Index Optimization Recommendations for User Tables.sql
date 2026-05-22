@@ -47,74 +47,85 @@ CREATE PROCEDURE [dbo].[Tarea_M7_V1]
 WITH ENCRYPTION
 AS
 BEGIN
-	-- Insertar los resultados en la tabla
+	;WITH IndexMetrics AS (
+		SELECT
+			OBJECT_NAME(ix.object_id) AS Tabla,
+			COALESCE(ix.name, 'Índice Implícito') AS Indice,
+			ix.type_desc AS [Tipo de Indice],
+			ix.type AS IndexType,
+			SUM(ISNULL(ps.used_page_count, 0)) * 8 AS TamanoKB,
+			ISNULL(ixus.user_seeks, 0) AS Busquedas,
+			ISNULL(ixus.user_scans, 0) AS Escaneos,
+			ISNULL(ixus.user_lookups, 0) AS ConsultasLookup,
+			ISNULL(ixus.user_updates, 0) AS Actualizaciones,
+			ixus.last_user_seek AS UltimaBusqueda,
+			ixus.last_user_scan AS UltimoEscaneo,
+			ixus.last_user_lookup AS UltimaConsultaLookup,
+			ixus.last_user_update AS UltimaActualizacion,
+			MAX(ISNULL(dmps.avg_fragmentation_in_percent, 0)) AS Fragmentacion
+		FROM sys.indexes AS ix
+		LEFT JOIN sys.dm_db_index_usage_stats AS ixus
+			ON ixus.database_id = DB_ID()
+			AND ixus.object_id = ix.object_id
+			AND ixus.index_id = ix.index_id
+		LEFT JOIN sys.dm_db_partition_stats AS ps
+			ON ps.object_id = ix.object_id
+			AND ps.index_id = ix.index_id
+		OUTER APPLY sys.dm_db_index_physical_stats(DB_ID(), ix.object_id, ix.index_id, NULL, 'SAMPLED') AS dmps
+		WHERE OBJECTPROPERTY(ix.object_id, 'IsUserTable') = 1
+			AND ix.index_id > 0
+		GROUP BY
+			ix.object_id,
+			ix.index_id,
+			ix.name,
+			ix.type_desc,
+			ix.type,
+			ixus.user_seeks,
+			ixus.user_scans,
+			ixus.user_lookups,
+			ixus.user_updates,
+			ixus.last_user_seek,
+			ixus.last_user_scan,
+			ixus.last_user_lookup,
+			ixus.last_user_update
+	)
 	INSERT INTO dbo.Mantto_OptimizacionIndices (FechaHora, Tabla, Indice, [Tipo de Indice], [Tamaño(KB)], Busquedas, Escaneos, [Consultas Lookup], Actualizaciones, [Ultima Busqueda], [Ultimo Escaneo], [Ultima Consulta Lookup], [Ultima Actualizacion], [Categoria Indice], Observacion)
-	SELECT 
-		GETDATE() as FechaHora,		
-		OBJECT_NAME(IX.OBJECT_ID) as Tabla,
-		COALESCE(IX.name, 'Índice Implícito') as Indice,
-		IX.type_desc as [Tipo de Indice],
-		CAST(SUM(PS.[used_page_count]) * 8 AS NVARCHAR(255)) as [Tamaño(KB)],
-		CAST(IXUS.user_seeks AS NVARCHAR(255)) as [Busquedas],
-		CAST(IXUS.user_scans AS NVARCHAR(255)) as [Escaneos],
-		CAST(IXUS.user_lookups AS NVARCHAR(255)) as [Consultas Lookup],
-		CAST(IXUS.user_updates AS NVARCHAR(255)) as [Actualizaciones],
-		ISNULL(CONVERT(NVARCHAR(255), IXUS.last_user_seek, 120), 'N/A') as [Ultima Busqueda],
-		ISNULL(CONVERT(NVARCHAR(255), IXUS.last_user_scan, 120), 'N/A') as [Ultimo Escaneo],
-		ISNULL(CONVERT(NVARCHAR(255), IXUS.last_user_lookup, 120), 'N/A') as [Ultima Consulta Lookup],
-		ISNULL(CONVERT(NVARCHAR(255), IXUS.last_user_update, 120), 'N/A') as [Ultima Actualizacion],
+	SELECT
+		GETDATE() AS FechaHora,
+		Tabla,
+		Indice,
+		[Tipo de Indice],
+		CAST(TamanoKB AS NVARCHAR(255)) AS [Tamaño(KB)],
+		CAST(Busquedas AS NVARCHAR(255)) AS Busquedas,
+		CAST(Escaneos AS NVARCHAR(255)) AS Escaneos,
+		CAST(ConsultasLookup AS NVARCHAR(255)) AS [Consultas Lookup],
+		CAST(Actualizaciones AS NVARCHAR(255)) AS Actualizaciones,
+		ISNULL(CONVERT(NVARCHAR(255), UltimaBusqueda, 120), 'N/A') AS [Ultima Busqueda],
+		ISNULL(CONVERT(NVARCHAR(255), UltimoEscaneo, 120), 'N/A') AS [Ultimo Escaneo],
+		ISNULL(CONVERT(NVARCHAR(255), UltimaConsultaLookup, 120), 'N/A') AS [Ultima Consulta Lookup],
+		ISNULL(CONVERT(NVARCHAR(255), UltimaActualizacion, 120), 'N/A') AS [Ultima Actualizacion],
 		CASE
-				WHEN IX.type = 1 THEN 'Clustered'
-				WHEN IX.type = 2 THEN 'Nonclustered'
-				WHEN IX.type = 3 THEN 'XML'
-				ELSE 'Other'
-		END as [Categoria Indice],
+			WHEN IndexType = 1 THEN 'Clustered'
+			WHEN IndexType = 2 THEN 'Nonclustered'
+			WHEN IndexType = 3 THEN 'XML'
+			ELSE 'Other'
+		END AS [Categoria Indice],
 		CASE
-				WHEN ((SUM(IXUS.user_scans) + SUM(IXUS.user_lookups)) > (SUM(IXUS.user_seeks) * 2) AND MAX(DMPS.avg_fragmentation_in_percent) >= 85) THEN 'Índices Fragmentados (' + CAST(MAX(DMPS.avg_fragmentation_in_percent) AS VARCHAR(10)) + '% Fragmentado)'
-				WHEN (SUM(IXUS.user_updates) > 0 AND SUM(IXUS.user_seeks) = 0) THEN 'Índices No Utilizados'
-				WHEN (SUM(PS.[used_page_count]) * 8 >= 1024) THEN 'Índices Grandes'
-				WHEN (SUM(IXUS.user_seeks) > 0 AND SUM(IXUS.user_updates) > 0 AND (SUM(IXUS.user_updates) / SUM(IXUS.user_seeks)) > 2) THEN 'Índices Ineficientes'
-				WHEN (CASE WHEN IX.type = 2 THEN 'Nonclustered' ELSE 'Other' END = 'Nonclustered' AND SUM(PS.[used_page_count]) * 8 >= 1024) THEN 'Índices no Clusterizados en Tablas Grandes'
-				WHEN (SUM(IXUS.user_seeks) = 0 AND SUM(IXUS.user_updates) = 0) THEN 'Índices sin uso'
-				ELSE 'Sin Observación'
-		END as [Observacion]
-	FROM sys.indexes IX
-	INNER JOIN sys.dm_db_index_usage_stats IXUS ON IXUS.index_id = IX.index_id AND IXUS.OBJECT_ID = IX.OBJECT_ID
-	INNER JOIN sys.dm_db_partition_stats PS ON PS.object_id = IX.object_id
-	CROSS APPLY sys.dm_db_index_physical_stats (DB_ID(), IX.OBJECT_ID, IX.index_id, NULL, 'SAMPLED') AS DMPS
-	WHERE OBJECTPROPERTY(IX.OBJECT_ID, 'IsUserTable') = 1
-	GROUP BY 
-		OBJECT_NAME(IX.OBJECT_ID),
-		IX.name,
-		IX.type_desc,
-		IXUS.user_seeks,
-		IXUS.user_scans,
-		IXUS.user_lookups,
-		IXUS.user_updates,
-		IXUS.last_user_seek,
-		IXUS.last_user_scan,
-		IXUS.last_user_lookup,
-		IXUS.last_user_update,
-		IX.type,
-		DMPS.avg_fragmentation_in_percent
-	HAVING 
-		-- Observación 1: Índices Fragmentados
-		(SUM(IXUS.user_scans) + SUM(IXUS.user_lookups)) > (SUM(IXUS.user_seeks) * 2) AND MAX(DMPS.avg_fragmentation_in_percent) >= 85
-		OR
-		-- Observación 2: Índices No Utilizados
-		(SUM(IXUS.user_updates) > 0 AND SUM(IXUS.user_seeks) = 0)
-		OR
-		-- Observación 3: Índices Grandes
-		(SUM(PS.[used_page_count]) * 8 >= 1024)
-		OR
-		-- Observación 4: Índices Ineficientes
-		(SUM(IXUS.user_seeks) > 0 AND SUM(IXUS.user_updates) > 0 AND (SUM(IXUS.user_updates) / SUM(IXUS.user_seeks)) > 2)
-		OR
-		-- Observación 5: Índices no Clusterizados en Tablas Grandes
-		(CASE WHEN IX.type = 2 THEN 'Nonclustered' ELSE 'Other' END = 'Nonclustered' AND SUM(PS.[used_page_count]) * 8 >= 1024)
-		OR
-		-- Observación 6: Índices sin uso
-		(SUM(IXUS.user_seeks) = 0 AND SUM(IXUS.user_updates) = 0)
+			WHEN (Escaneos + ConsultasLookup) > (Busquedas * 2) AND Fragmentacion >= 85 THEN 'Índices Fragmentados (' + CAST(CAST(Fragmentacion AS DECIMAL(10,2)) AS VARCHAR(20)) + '% Fragmentado)'
+			WHEN Actualizaciones > 0 AND Busquedas = 0 AND Escaneos = 0 AND ConsultasLookup = 0 THEN 'Índices No Utilizados'
+			WHEN TamanoKB >= 1024 AND IndexType = 2 THEN 'Índices no Clusterizados en Tablas Grandes'
+			WHEN TamanoKB >= 1024 THEN 'Índices Grandes'
+			WHEN Busquedas > 0 AND Actualizaciones > 0 AND (Actualizaciones * 1.0 / NULLIF(Busquedas, 0)) > 2 THEN 'Índices Ineficientes'
+			WHEN Busquedas = 0 AND Escaneos = 0 AND ConsultasLookup = 0 AND Actualizaciones = 0 THEN 'Índices sin uso'
+			ELSE 'Sin Observación'
+		END AS Observacion
+	FROM IndexMetrics
+	WHERE
+		((Escaneos + ConsultasLookup) > (Busquedas * 2) AND Fragmentacion >= 85)
+		OR (Actualizaciones > 0 AND Busquedas = 0 AND Escaneos = 0 AND ConsultasLookup = 0)
+		OR (TamanoKB >= 1024)
+		OR (Busquedas > 0 AND Actualizaciones > 0 AND (Actualizaciones * 1.0 / NULLIF(Busquedas, 0)) > 2)
+		OR (Busquedas = 0 AND Escaneos = 0 AND ConsultasLookup = 0 AND Actualizaciones = 0)
 
 END;
 GO

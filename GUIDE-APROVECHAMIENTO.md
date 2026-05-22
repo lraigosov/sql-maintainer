@@ -21,14 +21,14 @@ Resumen de tareas:
 - M1 (Revisión inicial): radiografía de fragmentación (baseline del día).
 - M2 (Reconstrucción >30%): REBUILD donde el impacto es mayor.
 - M3 (Reorganización 10–30%): REORGANIZE para casos medios.
-- M4 (Residual ≥10%): REBUILD de aseguramiento para cerrar brechas.
+- M4 (Residual calibrado): REBUILD de aseguramiento para cerrar brechas según umbrales vigentes del pipeline.
 - M5 (Revisión final): contraste post-mantenimiento (validación de efectividad).
 - M6 (Tiempos por consulta): métricas de ejecución para foco en rendimiento.
 - M7 (Recomendaciones de índices): insumos para optimizaciones futuras (no aplicar a ciegas).
 
 Recomendaciones operativas:
 - Ventana de mantenimiento: programe M1→M7 con el script `Setup-SQLAgentJobs.ps1` y horarios escalonados. Empiece con ventanas bajas y amplíe según evidencia.
-- Umbrales: los 10%/30% son base razonable; calibrelos por tabla/carga (p. ej., fillfactor según patrón de inserciones/actualizaciones).
+- Umbrales: los criterios del pipeline pueden calibrarse por tabla/carga (p. ej., fillfactor y umbrales residuales). Mantén una sola fuente de verdad en `daily-automation/README.md` y en perfiles de staging.
 - Seguridad: el SP `dbo.MaintenanceAlerts` envía avisos cuando hay riesgo; configure Database Mail y destinatarios.
 - Observabilidad: registre métricas de M6 y compárelas semana a semana.
 - Control de cambios: pruebe en no productivo; documente ajustes; use control de versiones (este repositorio).
@@ -140,6 +140,9 @@ Notas operativas:
 - Catálogo de consultas DBA: `dba-globals/README.md`
 - Script de automatización: `daily-automation/Setup-SQLAgentJobs.ps1`
 - Procedimiento de alertas: `dba-globals/SP - Maintenance Alerts.sql`
+- Checklist de validación en staging: `STAGING-VALIDATION-CHECKLIST.md`
+- Matriz de priorización de scripts: `SCRIPT-PRIORITIZATION-MATRIX.md`
+- Perfiles de baseline por entorno: `staging-baselines/M4-and-TopWaits-Profiles.md`
 
 ---
 

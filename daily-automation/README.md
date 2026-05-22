@@ -49,7 +49,7 @@ Funciona a nivel de la base de datos indicada en cada script (por defecto `BDPRI
 - [PM Daily - Task_M1_V2 - Initial Review.sql](./PM Daily - Task_M1_V2 - Initial Review.sql) — Recuento de índices con fragmentación media/alta; registra 'Inicial' en `dbo.Mantto_Revision`.
 - [PM Daily - Task_M2_V2 - Initial Rebuild.sql](./PM Daily - Task_M2_V2 - Initial Rebuild.sql) — REBUILD para > 30% con `FILLFACTOR = 80`; registra 'Inicial' en `dbo.Mantto_Reconstruccion`.
 - [PM Daily - Task_M3_V2 - Initial Reorganize.sql](./PM Daily - Task_M3_V2 - Initial Reorganize.sql) — REORGANIZE para 10–30%; registra en `dbo.Mantto_Reorganizacion`.
-- [PM Daily - Task_M4_V2 - Residual Rebuild.sql](./PM Daily - Task_M4_V2 - Residual Rebuild.sql) — REBUILD de aseguramiento para ≥ 10%; registra 'Final' en `dbo.Mantto_Reconstruccion`.
+- [PM Daily - Task_M4_V2 - Residual Rebuild.sql](./PM Daily - Task_M4_V2 - Residual Rebuild.sql) — REBUILD residual calibrado (por defecto: fragmentación ≥ 15% y tamaño ≥ 1000 páginas); registra 'Final' en `dbo.Mantto_Reconstruccion`.
 - [PM Daily - Task_M5_V2 - Final Review.sql](./PM Daily - Task_M5_V2 - Final Review.sql) — Recuento final de fragmentación; registra 'Final' en `dbo.Mantto_Revision`.
 - [PM Daily - Task_M6_V1 - Daily Query Times.sql](./PM Daily - Task_M6_V1 - Daily Query Times.sql) — Métricas de consultas del día actual en `dbo.ManttoTiemposConsulta`.
 - [PM Daily - Task_M7_V1 - Index Optimization Recommendations for User Tables.sql](./PM Daily - Task_M7_V1 - Index Optimization Recommendations for User Tables.sql) — Observaciones y recomendaciones de índices en `dbo.Mantto_OptimizacionIndices`.
@@ -71,35 +71,42 @@ Funciona a nivel de la base de datos indicada en cada script (por defecto `BDPRI
 1) [Tarea_M1_V2 – Revisión Inicial](#m1): mide fragmentación inicial y la registra.
 2) [Tarea_M2_V2 – Reconstrucción Inicial](#m2): REBUILD para fragmentación > 30%.
 3) [Tarea_M3_V2 – Reorganización Inicial](#m3): REORGANIZE para fragmentación entre 10% y 30%.
-4) [Tarea_M4_V2 – Reconstrucción Residual](#m4): REBUILD para cualquier índice con fragmentación ≥ 10% aún pendiente y registrar como "Final".
+4) [Tarea_M4_V2 – Reconstrucción Residual](#m4): REBUILD calibrado para índices aún pendientes (por defecto: fragmentación ≥ 15% y tamaño ≥ 1000 páginas) y registrar como "Final".
 5) [Tarea_M5_V2 – Revisión Final](#m5): vuelve a medir fragmentación (post-mantenimiento).
-6) [Tarea_M6_V1 – Tiempos por Consulta](#m6): captura métricas de consultas creadas hoy.
+6) [Tarea_M6_V1 – Tiempos por Consulta](#m6): captura métricas de consultas ejecutadas hoy.
 7) [Tarea_M7_V1 – Recomendaciones](#m7): registra observaciones y sugerencias sobre índices.
 
 Notas importantes del flujo:
 
+- M1 y M5 forman la línea base operativa del día: permiten medir si el mantenimiento realmente redujo fragmentación.
+- M2 y M3 separan tratamientos por severidad para balancear costo operativo y efectividad.
+- M4 funciona como cierre de aseguramiento; si el entorno prioriza minimizar retrabajo, conviene recalibrar su umbral.
+- M6 y M7 no sustituyen observabilidad continua: sirven como captura operativa diaria y backlog técnico accionable.
+
 
 ## Diagrama de flujo del pipeline
 
-[M1 Revisión Inicial](#m1)
-  |
-  v
-[M2 Reconstrucción Inicial](#m2) (>30%, REBUILD)
-  |
-  v
-[M3 Reorganización Inicial](#m3) (10–30%, REORGANIZE)
-  |
-  v
-[M4 Reconstrucción Residual](#m4) (≥10%, REBUILD de aseguramiento)
-  |
-  v
-[M5 Revisión Final](#m5) (comparar con M1)
-  |
-  v
-[M6 Tiempos por Consulta](#m6) (día actual)
-  |
-  v
-[M7 Recomendaciones de Índices](#m7)
+```mermaid
+flowchart TD
+    M1[M1 Revisión Inicial] --> M2[M2 Reconstrucción Inicial<br/>> 30% REBUILD]
+    M2 --> M3[M3 Reorganización Inicial<br/>10% a < 30% REORGANIZE]
+    M3 --> M4[M4 Reconstrucción Residual<br/>>= 15% y >= 1000 páginas REBUILD de aseguramiento]
+    M4 --> M5[M5 Revisión Final<br/>Comparar con M1]
+    M5 --> M6[M6 Tiempos por Consulta<br/>Captura diaria]
+    M6 --> M7[M7 Recomendaciones de Índices]
+```
+
+## Cuándo usar este módulo
+
+- Cuando ya existe una ventana de mantenimiento diaria o nocturna y se necesita estandarizarla.
+- Cuando se requiere evidencia operativa de qué índices se revisaron y qué acciones se ejecutaron.
+- Cuando el equipo necesita combinar mantenimiento correctivo con captura de métricas para mejora continua.
+
+## Cuándo ajustar antes de usarlo
+
+- Si la base es muy grande y el costo de `REBUILD` debe limitarse por ventana, log o presión sobre TEMPDB.
+- Si la edición de SQL Server permite `ONLINE = ON` y la política del entorno exige minimizar bloqueos.
+- Si el fillfactor, los umbrales 10/30 o el reproceso de M4 deben calibrarse para patrones OLTP o batch específicos.
 
 
 ## Artefactos creados (tablas de auditoría)
@@ -143,9 +150,10 @@ Notas importantes del flujo:
 <a id="m4"></a>
 ### 4. PM Diario _ Tarea_M4_V2 – Reconstrucción Residual (`Tarea_M4_V2`)
 
-- Qué hace: Pasa nuevamente por los índices con fragmentación ≥ 10% y ejecuta `REBUILD` (con Fillfactor 80), registrando `TipoRevision = 'Final'`.
+- Qué hace: Pasa nuevamente por índices pendientes y ejecuta `REBUILD` residual calibrado, registrando `TipoRevision = 'Final'`.
+- Calibración por defecto: fragmentación mínima `15%`, tamaño mínimo `1000` páginas y `FILLFACTOR = 80`.
 - Propósito: Asegurar que, si algo quedó con fragmentación tras M2/M3, se deje óptimo al final del ciclo.
-- Nota: Es un reproceso de aseguramiento para índices que no pudieron reorganizarse o quedar óptimos en M3; por ello puede rehacer algunos índices previamente reorganizados. Solo si se quisiera evitar este comportamiento en otro entorno, podría elevarse el umbral a > 30% o deshabilitarse.
+- Nota: Es un reproceso de aseguramiento para índices que no pudieron reorganizarse o quedar óptimos en M3; la calibración busca reducir retrabajo y costo de log/IO sin perder objetivo operativo.
 - Archivo: [PM Daily - Task_M4_V2 - Residual Rebuild.sql](./PM Daily - Task_M4_V2 - Residual Rebuild.sql)
 
 <a id="m5"></a>
@@ -158,9 +166,9 @@ Notas importantes del flujo:
 <a id="m6"></a>
 ### 6. PM Diario _ Tarea_M6_V1 – Tiempos por Consulta Diarios (`Tarea_M6_V1`)
 
-- Qué hace: Inserta en `dbo.ManttoTiemposConsulta` métricas de consultas con `creation_time` del día actual desde `sys.dm_exec_query_stats` y `sys.dm_exec_sql_text`.
+- Qué hace: Inserta en `dbo.ManttoTiemposConsulta` métricas de consultas ejecutadas en el día actual (`last_execution_time`) desde `sys.dm_exec_query_stats` y `sys.dm_exec_sql_text`.
 - Columnas: texto parcial de la sentencia, total de ejecuciones, tiempo CPU y transcurrido (ms), llamadas por segundo desde su creación.
-- Filtro: Sólo consultas creadas en la fecha actual (no histórico completo).
+- Filtro: Sólo consultas ejecutadas en la fecha actual (no histórico completo).
 - Archivo: [PM Daily - Task_M6_V1 - Daily Query Times.sql](./PM Daily - Task_M6_V1 - Daily Query Times.sql)
 
 <a id="m7"></a>
@@ -187,7 +195,7 @@ Notas importantes del flujo:
 - `EXEC dbo.Tarea_M1_V2;`  — Revisión Inicial
 - `EXEC dbo.Tarea_M2_V2;`  — Reconstrucción Inicial (> 30%)
 - `EXEC dbo.Tarea_M3_V2;`  — Reorganización Inicial (10–30%)
-- `EXEC dbo.Tarea_M4_V2;`  — Reconstrucción Residual (≥ 10%)
+- `EXEC dbo.Tarea_M4_V2;`  — Reconstrucción Residual calibrada (por defecto: ≥ 15% y ≥ 1000 páginas)
 - `EXEC dbo.Tarea_M5_V2;`  — Revisión Final
 - `EXEC dbo.Tarea_M6_V1;`  — Tiempos por Consulta Diarios
 - `EXEC dbo.Tarea_M7_V1;`  — Recomendaciones de Índices
@@ -337,7 +345,7 @@ Si prefieres no usar el script PowerShell, puedes:
 - Umbrales y roles de cada tarea:
   - M2 (> 30%): REBUILD cuando la fragmentación es alta.
   - M3 (10–30%): REORGANIZE para fragmentación media, menos intrusivo.
-  - M4 (≥ 10%): reproceso de aseguramiento. Pasa REBUILD sobre índices que no pudieron ser tratados o quedaron subóptimos tras M2/M3 (bloqueos, ventanas de tiempo, etc.). Es intencional que pueda solapar M3.
+  - M4 (configurable, por defecto ≥ 15% y ≥ 1000 páginas): reproceso de aseguramiento calibrado. Pasa REBUILD sobre índices que no pudieron ser tratados o quedaron subóptimos tras M2/M3.
 - Trade-offs considerados:
   - Disponibilidad y bloqueos: REBUILD puede requerir bloqueos mayores (mitigable con `ONLINE = ON` según edición). Se programa en ventana de baja carga.
   - Coste en LOG y TempDB: REBUILD consume más I/O y log que REORGANIZE; el reproceso M4 sólo se ejecuta una vez al final para cerrar brechas.

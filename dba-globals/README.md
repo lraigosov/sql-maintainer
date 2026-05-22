@@ -6,11 +6,16 @@ Este directorio contiene un conjunto de consultas SQL listas para uso cotidiano 
 - Compatibilidad: SQL Server 2016+ (DMVs usadas existen desde versiones anteriores, pero algunos detalles varían).
 - Convención de nombres: se renombraron todos los archivos a inglés manteniendo la documentación en español.
 
+## Cuándo usar este módulo
+
+- Cuando necesitas un playbook rápido para diagnosticar síntomas en producción o preproducción.
+- Cuando buscas consultas reutilizables para inventario técnico, observabilidad y gobierno del entorno.
+- Cuando quieres convertir troubleshooting ad hoc en una rutina operativa más consistente.
+
 ## Índice rápido de scripts
 
 - Rendimiento y esperas
   - [Top Server Waits and Most Impactful Queries.sql](./Top%20Server%20Waits%20and%20Most%20Impactful%20Queries.sql)
-  - [Most Executed Queries With Runtime >= 2s.sql](./Most%20Executed%20Queries%20With%20Runtime%20%3E%3D%202s.sql)
   - [Identify Queries Impacting TEMPDB with HASH Operations.sql](./Identify%20Queries%20Impacting%20TEMPDB%20with%20HASH%20Operations.sql)
 - Índices y fragmentación
   - [Count Indexes by Fragmentation Level per Table.sql](./Count%20Indexes%20by%20Fragmentation%20Level%20per%20Table.sql)
@@ -43,22 +48,25 @@ Este directorio contiene un conjunto de consultas SQL listas para uso cotidiano 
 - Permisos: se requieren permisos de lectura sobre catálogos del sistema y, para backups, acceso a `msdb`. El SP de alertas requiere `Database Mail` configurado.
 - Performance: evita ejecutar todas las consultas a la vez en servidores críticos. Prefiere ventanas de baja carga.
 
+## Playbooks rápidos por síntoma
+
+- Lentitud general del servidor: empieza por `Top Server Waits and Most Impactful Queries.sql` y luego revisa índices faltantes o fragmentación.
+- Bloqueos o sesiones colgadas: usa `View Blocking Processes.sql` y `Active Transactions and Blocking Details.sql`.
+- Presión sobre TEMPDB: ejecuta `Identify Queries Impacting TEMPDB with HASH Operations.sql` para revisar solicitudes activas con evidencia de HASH.
+- Revisión de estructura o traspaso de conocimiento: usa los scripts de metadatos para inventariar tablas, relaciones, vistas, SPs y restricciones.
+- Auditoría operativa: combina `View Executed Backups Details.sql`, `User Security Details.sql` y `SP - Maintenance Alerts.sql`.
+
 ## Detalle por script
 
 ### Top Server Waits and Most Impactful Queries
-- Propósito: ver las 3 esperas más altas del servidor y las 2 consultas con mayor CPU total, con su plan de ejecución.
+- Propósito: ver esperas relevantes del servidor (filtrando waits benignas de background) y las consultas con mayor CPU acumulada, con plan de ejecución.
 - DMVs: `sys.dm_os_wait_stats`, `sys.dm_exec_query_stats`, `sys.dm_exec_sql_text`, `sys.dm_exec_query_plan`.
-- Salida: tipo de espera, tiempos acumulados y consultas con plan.
-
-### Most Executed Queries With Runtime >= 2s
-- Propósito: identificar las consultas más ejecutadas con tiempo medio por ejecución >= 2 segundos (y más de 1000 ejecuciones).
-- Filtros: excluye bases del sistema; puedes ajustar umbrales.
-- DMVs: `sys.dm_exec_query_stats`, `sys.dm_exec_sql_text`, `sys.dm_exec_query_plan`.
+- Salida: tipo de espera con métricas de proporción/señal, y consultas costosas con métricas totales/promedio y plan.
 
 ### Identify Queries Impacting TEMPDB with HASH Operations
-- Propósito: listar solicitudes activas que puedan impactar TEMPDB y usan operaciones potencialmente costosas (pistas de HASH en el texto).
-- Nota: el script original tenía un filtro por base fija; revisa/ajusta para tu entorno.
-- DMVs: `sys.dm_exec_requests`, `sys.dm_exec_sql_text`, `sys.dm_exec_query_stats`.
+- Propósito: listar solicitudes activas que pueden impactar TEMPDB y que muestran evidencia de operaciones HASH por texto o plan de ejecución.
+- Ajuste incluido: el filtro por base ahora es opcional y ya no cruza erróneamente con toda la DMV `sys.dm_exec_query_stats`.
+- DMVs: `sys.dm_exec_requests`, `sys.dm_exec_sql_text`, `sys.dm_exec_query_plan`.
 
 ### Count Indexes by Fragmentation Level per Table
 - Propósito: contar por tabla cuántos índices están en estado de fragmentación media (10–30%) y alta (>30%).

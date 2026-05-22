@@ -2,6 +2,19 @@
 
 Curso estructurado de SQL con 47 notebooks Jupyter organizados progresivamente desde fundamentos hasta temas avanzados de performance y administración (DBA), más 1 notebook de configuración inicial (`00_setup_environment.ipynb`).
 
+## Para quién está pensado este módulo
+
+- Analistas o desarrolladores que necesitan una ruta guiada para fortalecer SQL con enfoque práctico.
+- Equipos que buscan un material interno de onboarding o nivelación técnica.
+- Perfiles que ya saben consultar, pero quieren avanzar hacia performance, observabilidad y criterio de negocio.
+
+## Qué se obtiene al completarlo
+
+- dominio progresivo de consultas, modelado, KPIs y depuración de calidad de datos;
+- práctica sobre optimización, índices, planes de ejecución y mantenimiento;
+- criterio para usar IA como apoyo y no como sustituto del razonamiento técnico;
+- evidencia de avance mediante laboratorios y rúbricas por nivel.
+
 ## Estructura de Notebooks (por tema)
 
 - **`level01/` Fundamentos (1.1–1.9)**:
@@ -132,3 +145,9 @@ Cada nivel incluye rúbricas de evaluación detalladas en la carpeta `evaluation
 3. Abre `level01/01_introduccion_relacional.ipynb` y sigue el orden secuencial.
 4. Completa cada proyecto capstone (`09_proyecto_cierre_junior.ipynb`, `10_proyecto_intermedio.ipynb`, `10_proyecto_senior.ipynb`) antes de avanzar al siguiente nivel.
 5. Usa los recursos en `resources/` como apoyo constante durante el curso.
+
+## Rutas sugeridas
+
+- Ruta analista: `level01` → `level02` → `labs/01_dashboard_ventas_basico.ipynb` → `evaluation/01_rubrica_junior.ipynb`.
+- Ruta desarrollador SQL: `level01` → `level02` → `level03/06_planes_ejecucion.ipynb` → `level03/07_query_tuning.ipynb` → `labs/03_optimizar_consultas_practico.ipynb`.
+- Ruta mentor o formador: `00_setup_environment.ipynb` → `resources/` → rúbricas de `evaluation/` para planificar seguimiento.

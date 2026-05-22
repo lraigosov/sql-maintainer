@@ -43,13 +43,16 @@ CREATE PROCEDURE [dbo].[Tarea_M2_V2]
 WITH ENCRYPTION
 AS
 BEGIN
+    SET NOCOUNT ON;
+
     DECLARE @IndexName NVARCHAR(255)
     DECLARE @TableName NVARCHAR(255)
     DECLARE @SchemaName NVARCHAR(255)
     DECLARE @FragmentationPercentage FLOAT
+    DECLARE @Sql NVARCHAR(MAX)
 
-    DECLARE IndexCursor CURSOR FOR
-    SELECT 
+    DECLARE IndexCursor CURSOR LOCAL FAST_FORWARD FOR
+    SELECT DISTINCT
         ind.name AS IndexName,
         tab.name AS TableName,
         SCHEMA_NAME(tab.[schema_id]) AS SchemaName,
@@ -57,14 +60,15 @@ BEGIN
     FROM
         sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, NULL) ps
     INNER JOIN
-        sys.databases dbs ON ps.database_id = dbs.database_id
-    INNER JOIN
-        sys.indexes ind ON ps.object_id = ind.object_id
+        sys.indexes ind ON ps.object_id = ind.object_id AND ps.index_id = ind.index_id
     INNER JOIN
         sys.tables tab ON tab.object_id = ind.object_id
     WHERE
         ind.name IS NOT NULL
-        AND ps.index_id = ind.index_id
+        AND ind.is_disabled = 0
+        AND ind.is_hypothetical = 0
+        AND ind.type IN (1, 2)
+        AND ps.page_count > 0
         AND ps.avg_fragmentation_in_percent > 30
 
     OPEN IndexCursor
@@ -72,16 +76,19 @@ BEGIN
 
     WHILE @@FETCH_STATUS = 0
     BEGIN
-        DECLARE @Sql NVARCHAR(MAX)
-        SET @Sql = 'ALTER INDEX [' + @IndexName + '] ON [' + @SchemaName + '].[' + @TableName + '] REBUILD WITH (FILLFACTOR = 80);'
-        EXEC sp_executesql @Sql
-		
-		-- Impresión para depuración
-        PRINT @Sql;
+        SET @Sql = N'ALTER INDEX ' + QUOTENAME(@IndexName) + N' ON ' + QUOTENAME(@SchemaName) + N'.' + QUOTENAME(@TableName) + N' REBUILD WITH (FILLFACTOR = 80);';
 
-        -- Insertar resultados en la tabla con marca de tiempo
-        INSERT INTO dbo.Mantto_Reconstruccion (FechaHora, IndexName, TableName, SchemaName, FragmentationPercentage, TipoRevision)
-        VALUES (GETDATE(), @IndexName, @TableName, @SchemaName, @FragmentationPercentage, 'Inicial');
+        BEGIN TRY
+            EXEC sp_executesql @Sql;
+
+            PRINT @Sql;
+
+            INSERT INTO dbo.Mantto_Reconstruccion (FechaHora, IndexName, TableName, SchemaName, FragmentationPercentage, TipoRevision)
+            VALUES (GETDATE(), @IndexName, @TableName, @SchemaName, @FragmentationPercentage, 'Inicial');
+        END TRY
+        BEGIN CATCH
+            PRINT 'Error en Tarea_M2_V2 para ' + QUOTENAME(@SchemaName) + '.' + QUOTENAME(@TableName) + ' / ' + QUOTENAME(@IndexName) + ': ' + ERROR_MESSAGE();
+        END CATCH;
 
         FETCH NEXT FROM IndexCursor INTO @IndexName, @TableName, @SchemaName, @FragmentationPercentage
     END

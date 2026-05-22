@@ -32,6 +32,7 @@ CREATE PROCEDURE [dbo].[MaintenanceAlerts]
     @send_email_flat bit = 0
 AS
 BEGIN
+SET NOCOUNT ON;
 
 -- Obtener la lista de índices fragmentados
 DECLARE @fragmentedIndexes TABLE (
@@ -86,10 +87,11 @@ SELECT @totalObjects = COUNT(*) FROM sys.objects WHERE type = 'U';
  
 -- Obtener el número de objetos con actualización de estadísticas con riesgo
 DECLARE @objectsRisk INT;
-SELECT @objectsRisk = COUNT(*) 
+SELECT @objectsRisk = COUNT(DISTINCT s.object_id)
 FROM sys.stats s
 JOIN sys.objects o ON o.object_id = s.object_id
 WHERE s.auto_created = 0 AND s.user_created = 1
+AND o.type = 'U'
 AND EXISTS (
     SELECT 1
     FROM sys.dm_db_stats_properties(s.object_id, s.stats_id) sp
@@ -98,7 +100,10 @@ AND EXISTS (
  
 -- Calcular el porcentaje de objetos con actualización de estadísticas con riesgo
 DECLARE @porcentajeRisk FLOAT;
-SET @porcentajeRisk = (@objectsRisk * 100.0) / @totalObjects;
+SET @porcentajeRisk = CASE
+    WHEN @totalObjects > 0 THEN (@objectsRisk * 100.0) / @totalObjects
+    ELSE 0
+END;
  
 -- Clasificar el riesgo de actualización de estadísticas
 DECLARE @riesgoEstadisticas VARCHAR(10);
@@ -120,14 +125,24 @@ SET @mensaje = @mensaje + CHAR(13) + CHAR(13) + CHAR(10) + '2. Estado general de
     + '. Objetos con riesgo: ' + CAST(@objectsRisk AS VARCHAR(10)) + '/' + CAST(@totalObjects AS VARCHAR(10));
  
 -- Obtener la cantidad de índices sugeridos por el sistema
-DECLARE @suggestedIndexesCount INT = (SELECT COUNT(*) FROM sys.dm_db_missing_index_details);
+DECLARE @suggestedIndexesCount INT = (
+    SELECT COUNT(*)
+    FROM sys.dm_db_missing_index_details
+    WHERE database_id = DB_ID()
+);
  
 -- Obtener el impacto probable de los índices sugeridos
 DECLARE @impactoProbable VARCHAR(10);
 IF @suggestedIndexesCount > 0
 BEGIN
-    DECLARE @totalImpact FLOAT = (SELECT SUM(avg_total_user_cost) FROM sys.dm_db_missing_index_group_stats);
-    DECLARE @averageImpact FLOAT = @totalImpact / @suggestedIndexesCount;
+    DECLARE @totalImpact FLOAT = (
+        SELECT SUM(s.avg_total_user_cost)
+        FROM sys.dm_db_missing_index_group_stats AS s
+        INNER JOIN sys.dm_db_missing_index_groups AS g ON s.group_handle = g.index_group_handle
+        INNER JOIN sys.dm_db_missing_index_details AS d ON d.index_handle = g.index_handle
+        WHERE d.database_id = DB_ID()
+    );
+    DECLARE @averageImpact FLOAT = COALESCE(@totalImpact, 0) / NULLIF(@suggestedIndexesCount, 0);
  
     IF @suggestedIndexesCount > 30
 	 BEGIN
@@ -155,8 +170,11 @@ SET @mensaje = @mensaje + CHAR(13) + CHAR(13) + CHAR(10) + '3. Cantidad de índi
 -- Obtener información del archivo de registro
 DECLARE @logSize FLOAT, @logUsedPercent FLOAT;
 SELECT
-    @logSize = size * 8.0 / 1024, -- Tamaño en MB
-    @logUsedPercent = CAST(FILEPROPERTY(name, 'SpaceUsed') AS FLOAT) / CAST(size AS FLOAT) * 100.0 -- Porcentaje de ocupación
+    @logSize = SUM(size) * 8.0 / 1024, -- Tamaño total en MB
+    @logUsedPercent = CASE
+        WHEN SUM(size) > 0 THEN SUM(CAST(FILEPROPERTY(name, 'SpaceUsed') AS FLOAT)) / SUM(CAST(size AS FLOAT)) * 100.0
+        ELSE 0
+    END -- Porcentaje total de ocupación
 FROM sys.database_files
 WHERE type = 1; -- Tipo 1 para archivos de registro
  
